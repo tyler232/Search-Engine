@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        .search-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .search-container input[type="text"] {
+            padding: 10px;
+            width: 300px;
+            font-size: 16px;
+        }
+        .search-container button {
+            padding: 10px 15px;
+            font-size: 16px;
+            background-color: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .search-container button:hover {
+            background-color: #555;
+        }
+        .results-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .result {
+            background-color: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .result h3 {
+            margin: 0;
+        }
+        .result a {
+            text-decoration: none;
+            color: #333;
+        }
+        .result p {
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Search Results</h1>
+    </header>
+    <div class="search-container">
+        <form action="/search" method="GET">
+            <input type="text" name="query" placeholder="Search..." value="<%= searchQuery %>" />
+            <button type="submit">Search</button>
+        </form>
+    </div>
+    <div class="results-container">
+        <% if (results && results.length > 0) { %>
+            <% results.forEach(function(result) { %>
+                <div class="result">
+                    <h3><a href="<%= result.url %>" target="_blank"><%= result.title %></a></h3>
+                    <p><%= result.word %> (<%= result.frequency %> occurrences)</p>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <p>No results found for "<%= searchQuery %>".</p>
+        <% } %>
+    </div>
+</body>
+</html>
