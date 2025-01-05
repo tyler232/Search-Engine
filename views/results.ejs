@@ -75,7 +75,7 @@
             <% results.forEach(function(result) { %>
                 <div class="result">
                     <h3><a href="<%= result.url %>" target="_blank"><%= result.title %></a></h3>
-                    <p><%= result.word %> (<%= result.frequency %> occurrences)</p>
+                    <p><%= result.preview %></p> <!-- Show the preview of the webpage -->
                 </div>
             <% }); %>
         <% } else { %>

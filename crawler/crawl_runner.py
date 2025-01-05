@@ -21,6 +21,7 @@ if __name__ == "__main__":
     
     starting_urls = [
         "https://illinois.edu",
+        "https://en.wikipedia.org/wiki/University_of_Illinois_Urbana-Champaign",
         "https://www.usnews.com/best-colleges",
         "https://www.coursera.org"
     ]

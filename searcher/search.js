@@ -1,23 +1,32 @@
 const mysql = require('mysql2');
 
-function search(dbConnection, searchQuery) {
+async function search(dbConnection, searchQuery) {
   return new Promise((resolve, reject) => {
-    const searchWords = searchQuery.split(' ');
-    const placeholders = searchWords.map(() => '?').join(', ');
+    const cleanedSearchQuery = searchQuery.replace(/\s+/g, '').toLowerCase();
 
     const query = `
-      SELECT w.url_id, w.word, w.frequency, p.title, p.url, p.pagerank
+      SELECT w.url_id, w.word, w.frequency, p.title, p.url, p.pagerank, 
+             SUBSTRING_INDEX(SUBSTRING_INDEX(p.text, ' ', 50), ' ', -50) AS preview
       FROM word_frequencies w
       JOIN webpages p ON w.url_id = p.id
-      WHERE w.word IN (${placeholders})
-      ORDER BY p.pagerank DESC, w.frequency DESC
+      WHERE CONCAT(w.word) LIKE ?
+      AND LOWER(REPLACE(p.title, ' ', '')) LIKE ?
+      ORDER BY 
+        CASE 
+          WHEN LOWER(REPLACE(p.title, ' ', '')) LIKE ? THEN 1
+          ELSE 2
+        END, 
+        p.pagerank DESC, w.frequency DESC
     `;
 
-    dbConnection.execute(query, searchWords, (err, results) => {
+    const fullSearchQuery = `%${cleanedSearchQuery}%`;
+    const titleSearchQuery = `%${cleanedSearchQuery}%`;
+
+    dbConnection.execute(query, [fullSearchQuery, titleSearchQuery, titleSearchQuery], (err, results) => {
       if (err) {
         return reject(err);
       }
-      
+
       resolve(results);
     });
   });

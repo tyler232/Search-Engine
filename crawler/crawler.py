@@ -19,7 +19,7 @@ from collections import Counter
 
 
 class WebCrawler:
-    def __init__(self, starting_urls, crawl_limit=1000, num_workers=4, db_config=None):
+    def __init__(self, starting_urls, crawl_limit=1000, num_workers=4, db_config=None, en_only=True):
         self.starting_urls = starting_urls
         self.crawl_limit = crawl_limit
         self.num_workers = num_workers
@@ -30,6 +30,7 @@ class WebCrawler:
         self.stop_crawl = threading.Event()
         self.robots_parsers = {}
         self.db_config = db_config
+        self.en_only = en_only
 
     def create_db_connection(self):
         return Database(self.db_config)
@@ -146,6 +147,12 @@ class WebCrawler:
             try:
                 response = requests.get(current_url, timeout=5)
                 response.raise_for_status()  # Check for request errors
+
+                if not self._is_english(response, response.content):
+                    print(f"Skipping non-English page: {current_url}")
+                    self.urls_to_crawl.task_done()
+                    continue
+
                 content = response.content
                 self.process_content(current_url, content, db_connection)
 
@@ -189,4 +196,17 @@ class WebCrawler:
                 executor.submit(self.crawl)
 
         print("All URLs have been crawled")
+    
+
+    def _is_english(self, response, content):
+        if 'Content-Language' in response.headers:
+            if 'en' in response.headers['Content-Language'].lower():
+                return True
+
+        soup = BeautifulSoup(content, "html.parser")
+        html_tag = soup.find('html')
+        if html_tag and html_tag.get('lang', '').startswith('en'):
+            return True
+
+        return False
 

@@ -23,7 +23,7 @@ const unordered_set<string> stop_words = {
     "nor", "not", "only", "own", "same", "so", "than", "too", "very", "s", "t", "can", "will", "just",
     "don", "now", "my", "me", "are", "is", "was", "were", "be", "been", "being", "have", "has", "had",
     "do", "does", "did", "may", "might", "must", "could", "would", "should", "shall", "get", "got", "we",
-    "you", "your", "he", "him", "his", "she", "her", "it", "its", "they", "them", "their", "i", "am"
+    "you", "your", "he", "him", "his", "she", "her", "it", "its", "they", "them", "their", "i", "am", "of", "have"
 };
 
 
